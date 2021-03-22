@@ -1,8 +1,7 @@
 name: Digger CI
 on: 
   push:
-    paths: 
-      - "*"
+
 jobs:
 
   build-push-backend-staging:
