@@ -25,7 +25,7 @@ SECRET_KEY = "@e2(yx)v&tgh3_s=0yja-i!dpebxsz^dg47x)-k&kq_3zf*9e*"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.dggr.app']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
