@@ -1,0 +1,165 @@
+name: Digger CI
+on: 
+  push:
+    paths: 
+      - "*"
+jobs:
+
+  build-push-backend-staging:
+    runs-on: ubuntu-16.04
+    needs:
+      - get_tag_version
+      - mario-tests
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.DIGGER_AWS_KEY }}
+        aws-secret-access-key: ${{ secrets.DIGGER_AWS_SECRET }}
+        aws-region: eu-west-1
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Build and push
+      env:
+        DIGGER_TOKEN: ${{ secrets.DIGGER_TOKEN }}
+        DIGGER_AWS_KEY: ${{ secrets.DIGGER_AWS_KEY }}
+        DIGGER_AWS_SECRET: ${{ secrets.DIGGER_AWS_SECRET }}
+        BACKEND_ENDPOINT: "https://backend.digger.dev"
+        WEBAPP_ENDPOINT: "https://app.digger.dev"
+      run: |
+        export TAG_VERSION=${{needs.get_tag_version.outputs.tag_version}} 
+
+        # Install diggercli
+        pip install --upgrade git+https://github.com/diggerhq/cli@master
+        # username: dg-todolist-bot
+
+        echo "> Building docker image"
+        dg env build stage --service backend --context .
+        echo "> Pushing docker image to ECR"    
+        dg env push stage --service backend --aws-key "$DIGGER_AWS_KEY" --aws-secret "$DIGGER_AWS_SECRET"
+
+  release-backend-staging:
+    runs-on: ubuntu-16.04
+    needs:
+      - build-push-backend-staging
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.DIGGER_AWS_KEY }}
+        aws-secret-access-key: ${{ secrets.DIGGER_AWS_SECRET }}
+        aws-region: eu-west-1
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Build and push
+      env:
+        DIGGER_TOKEN: ${{ secrets.DIGGER_TOKEN }}
+        DIGGER_AWS_KEY: ${{ secrets.DIGGER_AWS_KEY }}
+        DIGGER_AWS_SECRET: ${{ secrets.DIGGER_AWS_SECRET }}
+        BACKEND_ENDPOINT: "https://backend.digger.dev"
+        WEBAPP_ENDPOINT: "https://app.digger.dev"
+      run: |
+        export TAG_VERSION=${{needs.get_tag_version.outputs.tag_version}}
+
+        # Install diggercli
+        pip install --upgrade git+https://github.com/diggerhq/cli@master
+        # username: qc-digger-bot
+
+        echo "> Building docker image"
+        dg env build stage --service backend
+        echo "> Pushing docker image to ECR"
+        dg env push stage --service backend --aws-key "$DIGGER_AWS_KEY" --aws-secret "$DIGGER_AWS_SECRET"
+
+
+  build-push-backend-production:
+    runs-on: ubuntu-16.04
+    needs:
+      - get_tag_version
+      - mario-tests
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.DIGGER_AWS_KEY }}
+        aws-secret-access-key: ${{ secrets.DIGGER_AWS_SECRET }}
+        aws-region: eu-west-1
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Build and push
+      env:
+        DIGGER_TOKEN: ${{ secrets.DIGGER_TOKEN }}
+        DIGGER_AWS_KEY: ${{ secrets.DIGGER_AWS_KEY }}
+        DIGGER_AWS_SECRET: ${{ secrets.DIGGER_AWS_SECRET }}
+        BACKEND_ENDPOINT: "https://backend.digger.dev"
+        WEBAPP_ENDPOINT: "https://app.digger.dev"
+      run: |
+        export TAG_VERSION=${{needs.get_tag_version.outputs.tag_version}} 
+
+        # Install diggercli
+        pip install --upgrade git+https://github.com/diggerhq/cli@master
+        # username: dg-todolist-bot
+
+        echo "> Building docker image"
+        dg env build prod --service backend --context .
+        echo "> Pushing docker image to ECR"    
+        dg env push prod --service backend --aws-key "$DIGGER_AWS_KEY" --aws-secret "$DIGGER_AWS_SECRET"
+
+  release-backend-production:
+    runs-on: ubuntu-16.04
+    needs:
+      - build-push-backend-production
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.DIGGER_AWS_KEY }}
+        aws-secret-access-key: ${{ secrets.DIGGER_AWS_SECRET }}
+        aws-region: eu-west-1
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Build and push
+      env:
+        DIGGER_TOKEN: ${{ secrets.DIGGER_TOKEN }}
+        DIGGER_AWS_KEY: ${{ secrets.DIGGER_AWS_KEY }}
+        DIGGER_AWS_SECRET: ${{ secrets.DIGGER_AWS_SECRET }}
+        BACKEND_ENDPOINT: "https://backend.digger.dev"
+        WEBAPP_ENDPOINT: "https://app.digger.dev"
+      run: |
+        export TAG_VERSION=${{needs.get_tag_version.outputs.tag_version}}
+
+        # Install diggercli
+        pip install --upgrade git+https://github.com/diggerhq/cli@master
+        # username: qc-digger-bot
+
+        echo "> Building docker image"
+        dg env build prod --service backend
+        echo "> Pushing docker image to ECR"
+        dg env push prod --service backend --aws-key "$DIGGER_AWS_KEY" --aws-secret "$DIGGER_AWS_SECRET"
