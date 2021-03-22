@@ -74,10 +74,8 @@ jobs:
         pip install --upgrade git+https://github.com/diggerhq/cli@master
         # username: qc-digger-bot
 
-        echo "> Building docker image"
-        dg env build stage --service backend
-        echo "> Pushing docker image to ECR"
-        dg env push stage --service backend --aws-key "$DIGGER_AWS_KEY" --aws-secret "$DIGGER_AWS_SECRET"
+        echo "> Releasing docker image"
+        dg env release stage --service backend
 
 
   build-push-backend-production:
@@ -152,7 +150,6 @@ jobs:
         pip install --upgrade git+https://github.com/diggerhq/cli@master
         # username: qc-digger-bot
 
-        echo "> Building docker image"
-        dg env build prod --service backend
-        echo "> Pushing docker image to ECR"
-        dg env push prod --service backend --aws-key "$DIGGER_AWS_KEY" --aws-secret "$DIGGER_AWS_SECRET"
+        echo "> Releasing docker image"
+        dg env release prod --service backend
+        
