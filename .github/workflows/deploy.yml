@@ -36,7 +36,7 @@ jobs:
         # username: dg-todolist-bot
 
         echo "> Building docker image"
-        dg env build stage --service backend --context .
+        dg env build stage --service backend
         echo "> Pushing docker image to ECR"    
         dg env push stage --service backend --aws-key "$DIGGER_AWS_KEY" --aws-secret "$DIGGER_AWS_SECRET"
 
@@ -114,7 +114,7 @@ jobs:
         # username: dg-todolist-bot
 
         echo "> Building docker image"
-        dg env build prod --service backend --context .
+        dg env build prod --service backend
         echo "> Pushing docker image to ECR"    
         dg env push prod --service backend --aws-key "$DIGGER_AWS_KEY" --aws-secret "$DIGGER_AWS_SECRET"
 
