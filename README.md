@@ -9,4 +9,4 @@ exemplary django application - small to do list web app, deployed with Digger ðŸ
   `-'   `----' `----'  `----'    `----'`-'`----'  `-'  
 
 ```
-(http://todo-example-stage.dggr.app/)[http://todo-example-stage.dggr.app/]
+[http://todo-example-stage.dggr.app/](http://todo-example-stage.dggr.app/)
