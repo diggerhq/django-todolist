@@ -1,8 +1,16 @@
 project:
   name: dg-todolst
+
 environments:
   local-docker:
     target: docker
+
+resources:
+  - database:
+    name: todolistdb
+    engine: postgres
+    size: 10gb
+    
 services:
   backend:
     service_name: backend
